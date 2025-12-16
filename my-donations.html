@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Donations - HAMK</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="auth-styles.css">
+    <style>
+        .donations-container {
+            min-height: 100vh;
+            background: #f8f9fc;
+            padding: 20px;
+        }
+        
+        .donations-header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .donations-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .donation-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #4d3cd0;
+        }
+        
+        .donation-card.completed {
+            border-left-color: #27ae60;
+        }
+        
+        .donation-card.pending {
+            border-left-color: #f39c12;
+        }
+        
+        .donation-card.cancelled {
+            border-left-color: #e74c3c;
+        }
+        
+        .donation-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .donation-details {
+            margin: 15px 0;
+        }
+        
+        .donation-details h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .donation-details p {
+            color: #7f8c8d;
+            margin: 5px 0;
+        }
+        
+        .donation-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .empty-state h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state p {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-tab {
+            padding: 8px 16px;
+            border: 2px solid #e1e8ed;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .filter-tab.active {
+            background: #4d3cd0;
+            color: white;
+            border-color: #4d3cd0;
+        }
+        
+        .filter-tab:hover {
+            border-color: #4d3cd0;
+        }
+    </style>
+</head>
+<body>
+    <div class="donations-container">
+        <div class="donations-header">
+            <div>
+                <h1>My Donations</h1>
+                <p>Track your donation history and impact</p>
+            </div>
+            <div>
+                <a href="dashboard.html" class="btn btn-outline">← Back to Dashboard</a>
+                <a href="index.html" class="btn btn-primary">Make New Donation</a>
+            </div>
+        </div>
+
+        <div class="filter-tabs">
+            <div class="filter-tab active" data-filter="all">All Donations</div>
+            <div class="filter-tab" data-filter="completed">Completed</div>
+            <div class="filter-tab" data-filter="pending">Pending</div>
+            <div class="filter-tab" data-filter="cancelled">Cancelled</div>
+        </div>
+
+        <div id="donationsList" class="donations-content">
+            <!-- Donations will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Authentication Script -->
+    <script src="auth.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    loadDonations();
+                    setupFilterTabs();
+                } else {
+                    window.location.href = 'login.html';
+                }
+            });
+        });
+
+        async function loadDonations() {
+            const user = authManager.getCurrentUser();
+            if (!user) return;
+
+            try {
+                // Load donations from Firestore
+                const donationsSnapshot = await firebase.firestore()
+                    .collection('donations')
+                    .where('userId', '==', user.uid)
+                    .orderBy('createdAt', 'desc')
+                    .get();
+
+                const donations = [];
+                donationsSnapshot.forEach(doc => {
+                    donations.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                displayDonations(donations);
+            } catch (error) {
+                console.error('Error loading donations:', error);
+                displayEmptyState();
+            }
+        }
+
+        function displayDonations(donations) {
+            const container = document.getElementById('donationsList');
+            
+            if (donations.length === 0) {
+                displayEmptyState();
+                return;
+            }
+
+            container.innerHTML = donations.map(donation => `
+                <div class="donation-card ${donation.status || 'pending'}" data-status="${donation.status || 'pending'}">
+                    <div class="donation-status status-${donation.status || 'pending'}">
+                        ${(donation.status || 'pending').toUpperCase()}
+                    </div>
+                    <div class="donation-details">
+                        <h3>${donation.ngoName || 'NGO Donation'}</h3>
+                        <p><strong>Items:</strong> ${donation.items || 'Clothes and household items'}</p>
+                        <p><strong>Date:</strong> ${formatDate(donation.createdAt)}</p>
+                        <p><strong>NGO:</strong> ${donation.ngoName || 'Local NGO'}</p>
+                        <p><strong>Location:</strong> ${donation.location || 'Not specified'}</p>
+                        ${donation.notes ? `<p><strong>Notes:</strong> ${donation.notes}</p>` : ''}
+                    </div>
+                    <div class="donation-actions">
+                        ${donation.status === 'pending' ? `
+                            <button class="btn btn-outline" onclick="updateDonationStatus('${donation.id}', 'completed')">
+                                Mark Complete
+                            </button>
+                            <button class="btn btn-outline" onclick="updateDonationStatus('${donation.id}', 'cancelled')">
+                                Cancel
+                            </button>
+                        ` : ''}
+                        <button class="btn btn-outline" onclick="viewDonationDetails('${donation.id}')">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function displayEmptyState() {
+            const container = document.getElementById('donationsList');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <h3>No Donations Yet</h3>
+                    <p>You haven't made any donations yet. Start making a difference today!</p>
+                    <a href="index.html" class="btn btn-primary">Make Your First Donation</a>
+                </div>
+            `;
+        }
+
+        function setupFilterTabs() {
+            const tabs = document.querySelectorAll('.filter-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    const filter = tab.dataset.filter;
+                    filterDonations(filter);
+                });
+            });
+        }
+
+        function filterDonations(status) {
+            const cards = document.querySelectorAll('.donation-card');
+            cards.forEach(card => {
+                if (status === 'all' || card.dataset.status === status) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        async function updateDonationStatus(donationId, newStatus) {
+            try {
+                await firebase.firestore()
+                    .collection('donations')
+                    .doc(donationId)
+                    .update({
+                        status: newStatus,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                
+                authManager.showMessage(`Donation ${newStatus} successfully!`, 'success');
+                loadDonations(); // Reload donations
+            } catch (error) {
+                console.error('Error updating donation:', error);
+                authManager.showMessage('Error updating donation. Please try again.', 'error');
+            }
+        }
+
+        function viewDonationDetails(donationId) {
+            authManager.showMessage('Donation details feature coming soon!', 'success');
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return 'Not specified';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+    </script>
+</body>
+</html>

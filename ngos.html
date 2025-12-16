@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SERVEHEX - NGOs</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script defer src="config.js"></script>
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script defer src="app.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="brand">HAMK</a>
+                <button class="menu-toggle" id="menu-toggle" aria-label="Open Menu">☰</button>
+                <nav id="nav-menu">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="ngos.html">NGOs</a></li>
+                        <li><a href="donate.html">Donate</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="buttons" id="auth-buttons">
+                    <a href="login.html" class="btn btn-outline">Login</a>
+                    <a href="signup.html" class="btn btn-primary">Sign Up</a>
+                </div>
+                <div class="buttons" id="user-menu" style="display: none;">
+                    <a href="dashboard.html" class="btn btn-outline">Dashboard</a>
+                    <button onclick="signOut()" class="btn btn-primary">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="donate" style="background-image:none;background:#f8f9fc;color:#111;">
+        <div class="container">
+            <div class="donate-content">
+                <h1>Find NGOs Near You</h1>
+                <p>Search by city or use your current location to see nearby NGOs.</p>
+                <div class="search-controls">
+                    <div class="search-box">
+                        <input id="location-input" type="text" placeholder="Enter your location (e.g., Meerut, IN)">
+                        <button id="search-btn" class="search-btn">Search</button>
+                    </div>
+                    <button id="use-my-location" class="btn btn-geo">Use my location</button>
+                </div>
+                <div id="results" class="results">
+                    <div class="results-hint">Search to see NGOs near you.</div>
+                </div>
+                <div class="map-wrap">
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SERVEHEX</h3>
+                    <p>Bridging the gap between generous donors and NGOs in need of clothing donations.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="ngos.html">NGO Directory</a></li>
+                        <li><a href="donate.html">Donation Guidelines</a></li>
+                        <li><a href="about.html">How It Works</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li>Email: contact@servehex.org</li>
+                        <li>Phone: (+91) 00000 00000</li>
+                        <li>Address: Meerut, India</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Authentication Script -->
+    <script src="auth.js"></script>
+
+    <script>
+        // Check authentication status and update UI
+        document.addEventListener('DOMContentLoaded', function() {
+            firebase.auth().onAuthStateChanged((user) => {
+                const authButtons = document.getElementById('auth-buttons');
+                const userMenu = document.getElementById('user-menu');
+                
+                if (user) {
+                    authButtons.style.display = 'none';
+                    userMenu.style.display = 'flex';
+                } else {
+                    authButtons.style.display = 'flex';
+                    userMenu.style.display = 'none';
+                }
+            });
+        });
+
+        function signOut() {
+            if (window.authManager) {
+                authManager.signOut();
+            } else {
+                firebase.auth().signOut().then(() => {
+                    window.location.reload();
+                });
+            }
+        }
+    </script>
+
+</body>
+</html>
+

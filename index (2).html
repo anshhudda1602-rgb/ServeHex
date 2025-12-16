@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DonateConnect</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f9fafb; color: #0f172a; }
+    header { background: #2563EB; color: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { margin: 0; font-size: 28px; }
+    nav a { color: white; margin-left: 20px; text-decoration: none; font-weight: 600; }
+    .hero { display: flex; align-items: center; justify-content: space-between; padding: 60px 40px; }
+    .hero-text h2 { font-size: 42px; margin-bottom: 10px; color: #2563EB; }
+    .hero-text p { font-size: 20px; margin: 10px 0; }
+    .hero-text small { color: #16A34A; font-weight: bold; }
+    .donation-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 300px; }
+    .donation-card h3 { margin: 0 0 10px; }
+    .donation-card p { margin: 5px 0; }
+    .donation-card button { background: #16A34A; color: white; border: none; padding: 12px 18px; border-radius: 8px; font-size: 16px; cursor: pointer; }
+    .features { display: flex; justify-content: space-around; padding: 40px; background: #fff; }
+    .feature { width: 30%; text-align: center; padding: 20px; border-radius: 10px; background: #f3f4f6; }
+    .map-strip { padding: 40px; text-align: center; }
+    footer { background: #0f172a; color: white; text-align: center; padding: 20px; margin-top: 30px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>DonateConnect</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">How It Works</a>
+      <a href="#">NGOs</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+      <a href="#">EN/हिंदी</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h2>Turn extras into essentials.</h2>
+      <p>Connect donors with NGOs for clothes, books and essentials.</p>
+      <small>दान करें • Donate • मदद पहुँचाएँ</small>
+    </div>
+    <div class="donation-card">
+      <h3>Sample Donation</h3>
+      <p><b>Item:</b> Warm Jacket</p>
+      <p><b>Condition:</b> Good</p>
+      <p><b>Location:</b> Delhi</p>
+      <button>Donate Now (₹50)</button>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feature">
+      <h3>List Items</h3>
+      <p>Quickly list what you want to donate</p>
+    </div>
+    <div class="feature">
+      <h3>Find NGO</h3>
+      <p>Smart matching by need & location</p>
+    </div>
+    <div class="feature">
+      <h3>Track Impact</h3>
+      <p>Get verified updates</p>
+    </div>
+  </section>
+
+  <section class="map-strip">
+    <h3>Find NGOs Near You</h3>
+    <input type="text" placeholder="Enter your location"> 
+    <button>Search</button>
+  </section>
+
+  <footer>
+    <p>© 2025 DonateConnect | contact@donateconnect.org</p>
+  </footer>
+
+</body>
+</html>

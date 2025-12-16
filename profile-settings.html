@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings - HAMK</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="auth-styles.css">
+    <style>
+        .profile-container {
+            min-height: 100vh;
+            background: #f8f9fc;
+            padding: 20px;
+        }
+        
+        .profile-header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+        
+        .profile-sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        
+        .profile-main {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4d3cd0, #2298e1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+        
+        .profile-info h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .profile-info p {
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fc;
+            border-radius: 10px;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4d3cd0;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .settings-section {
+            margin-bottom: 30px;
+        }
+        
+        .settings-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f8f9fc;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4d3cd0;
+            box-shadow: 0 0 0 3px rgba(77, 60, 208, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .danger-zone {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .danger-zone h4 {
+            color: #dc2626;
+            margin-bottom: 10px;
+        }
+        
+        .danger-zone p {
+            color: #7f1d1d;
+            margin-bottom: 15px;
+        }
+        
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <div>
+                <h1>Profile Settings</h1>
+                <p>Manage your account information and preferences</p>
+            </div>
+            <div>
+                <a href="dashboard.html" class="btn btn-outline">← Back to Dashboard</a>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <div class="profile-sidebar">
+                <div class="profile-avatar" id="profileAvatar">
+                    U
+                </div>
+                <div class="profile-info">
+                    <h3 id="userName">User Name</h3>
+                    <p id="userEmail">user@example.com</p>
+                </div>
+                
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalDonations">0</div>
+                        <div class="stat-label">Donations</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="memberSince">2024</div>
+                        <div class="stat-label">Member Since</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-main">
+                <form id="profileForm">
+                    <div class="settings-section">
+                        <h3>Personal Information</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fullName">Full Name</label>
+                                <input type="text" id="fullName" name="fullName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" required readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" name="phone">
+                            </div>
+                            <div class="form-group">
+                                <label for="location">Location</label>
+                                <input type="text" id="location" name="location" placeholder="City, State">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Account Preferences</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="userType">Account Type</label>
+                                <select id="userType" name="userType" required>
+                                    <option value="donor">Individual Donor</option>
+                                    <option value="ngo">NGO Representative</option>
+                                    <option value="volunteer">Volunteer</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="notifications">Email Notifications</label>
+                                <select id="notifications" name="notifications">
+                                    <option value="all">All Notifications</option>
+                                    <option value="important">Important Only</option>
+                                    <option value="none">No Notifications</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Change Password</h3>
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword" name="currentPassword">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword" name="newPassword" minlength="6">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" minlength="6">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-outline" onclick="resetForm()">Reset</button>
+                    </div>
+                </form>
+
+                <div class="danger-zone">
+                    <h4>Danger Zone</h4>
+                    <p>Once you delete your account, there is no going back. Please be certain.</p>
+                    <button class="btn-danger" onclick="deleteAccount()">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Authentication Script -->
+    <script src="auth.js"></script>
+
+    <script>
+        let userData = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    loadUserProfile();
+                    setupFormHandlers();
+                } else {
+                    window.location.href = 'login.html';
+                }
+            });
+        });
+
+        async function loadUserProfile() {
+            const user = authManager.getCurrentUser();
+            if (!user) return;
+
+            try {
+                // Load user data from Firestore
+                const userDoc = await firebase.firestore()
+                    .collection('users')
+                    .doc(user.uid)
+                    .get();
+
+                if (userDoc.exists) {
+                    userData = userDoc.data();
+                    populateForm(userData);
+                    updateProfileDisplay(user, userData);
+                } else {
+                    // Create user document if it doesn't exist
+                    userData = {
+                        fullName: user.displayName || '',
+                        email: user.email,
+                        phone: '',
+                        location: '',
+                        userType: 'donor',
+                        notifications: 'all',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    await firebase.firestore()
+                        .collection('users')
+                        .doc(user.uid)
+                        .set(userData);
+                    populateForm(userData);
+                    updateProfileDisplay(user, userData);
+                }
+            } catch (error) {
+                console.error('Error loading user profile:', error);
+                authManager.showMessage('Error loading profile. Please refresh the page.', 'error');
+            }
+        }
+
+        function populateForm(data) {
+            document.getElementById('fullName').value = data.fullName || '';
+            document.getElementById('email').value = data.email || '';
+            document.getElementById('phone').value = data.phone || '';
+            document.getElementById('location').value = data.location || '';
+            document.getElementById('userType').value = data.userType || 'donor';
+            document.getElementById('notifications').value = data.notifications || 'all';
+        }
+
+        function updateProfileDisplay(user, data) {
+            const userName = data.fullName || user.displayName || user.email.split('@')[0];
+            const userEmail = user.email;
+            
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('userEmail').textContent = userEmail;
+            
+            // Update avatar with first letter of name
+            const firstLetter = userName.charAt(0).toUpperCase();
+            document.getElementById('profileAvatar').textContent = firstLetter;
+            
+            // Update stats
+            document.getElementById('totalDonations').textContent = data.totalDonations || 0;
+            document.getElementById('memberSince').textContent = data.createdAt ? 
+                new Date(data.createdAt.toDate()).getFullYear() : new Date().getFullYear();
+        }
+
+        function setupFormHandlers() {
+            const form = document.getElementById('profileForm');
+            form.addEventListener('submit', handleFormSubmit);
+
+            // Password confirmation validation
+            const newPassword = document.getElementById('newPassword');
+            const confirmPassword = document.getElementById('confirmPassword');
+            
+            confirmPassword.addEventListener('input', function() {
+                if (newPassword.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity('Passwords do not match');
+                } else {
+                    confirmPassword.setCustomValidity('');
+                }
+            });
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const user = authManager.getCurrentUser();
+            if (!user) return;
+
+            const formData = new FormData(e.target);
+            const currentPassword = formData.get('currentPassword');
+            const newPassword = formData.get('newPassword');
+            const confirmPassword = formData.get('confirmPassword');
+
+            // Validate password change if provided
+            if (newPassword && newPassword !== confirmPassword) {
+                authManager.showMessage('New passwords do not match', 'error');
+                return;
+            }
+
+            try {
+                // Update password if provided
+                if (newPassword && currentPassword) {
+                    const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+                    await user.reauthenticateWithCredential(credential);
+                    await user.updatePassword(newPassword);
+                }
+
+                // Update user profile
+                const updates = {
+                    fullName: formData.get('fullName'),
+                    phone: formData.get('phone'),
+                    location: formData.get('location'),
+                    userType: formData.get('userType'),
+                    notifications: formData.get('notifications'),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                // Update display name in Firebase Auth
+                if (updates.fullName !== user.displayName) {
+                    await user.updateProfile({
+                        displayName: updates.fullName
+                    });
+                }
+
+                // Update user document in Firestore
+                await firebase.firestore()
+                    .collection('users')
+                    .doc(user.uid)
+                    .update(updates);
+
+                authManager.showMessage('Profile updated successfully!', 'success');
+                
+                // Clear password fields
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+
+                // Reload profile data
+                loadUserProfile();
+
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                authManager.showMessage('Error updating profile. Please try again.', 'error');
+            }
+        }
+
+        function resetForm() {
+            if (userData) {
+                populateForm(userData);
+            }
+        }
+
+        async function deleteAccount() {
+            if (!confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                return;
+            }
+
+            const user = authManager.getCurrentUser();
+            if (!user) return;
+
+            try {
+                // Delete user document from Firestore
+                await firebase.firestore()
+                    .collection('users')
+                    .doc(user.uid)
+                    .delete();
+
+                // Delete user from Firebase Auth
+                await user.delete();
+
+                authManager.showMessage('Account deleted successfully', 'success');
+                window.location.href = 'index.html';
+
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                authManager.showMessage('Error deleting account. Please try again.', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
